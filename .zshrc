@@ -32,9 +32,9 @@ eval "$(starship init zsh)"
 export PATH="$PATH:$ZDOTDIR/.antidote/bundle/wfxr/forgit/bin" # cant seem to get the antigen vars to work
 
 # exa
-alias ls="exa --icons"
-alias ll="exa --long --group --icons --header --git"
-alias la="exa --long --all --group --icons --header --git"
+alias ls="eza --icons"
+alias ll="eza --long --group --icons --header --git"
+alias la="eza --long --all --group --icons --header --git"
 
 function osc7-pwd() {
     emulate -L zsh # also sets localoptions for us
@@ -52,3 +52,13 @@ precmd() {
     print -Pn "\e]133;A\e\\"
 }
 
+# setup ssh agent
+if [ ! -S ~/.ssh/ssh_auth_sock ]; then
+    eval `ssh-agent`
+    ln -sf "$SSH_AUTH_SOCK" ~/.ssh/ssh_auth_sock
+fi
+
+export SSH_AUTH_SOCK=~/.ssh/ssh_auth_sock
+ssh-add -l > /dev/null || ssh-add
+
+bindkey -e
