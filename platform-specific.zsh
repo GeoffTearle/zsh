@@ -1,4 +1,4 @@
-case $(uname) in
+case $(uname -s) in
   Linux)
 	  DISTRO=$(awk -F'=' '/^ID=/ {print tolower($2)}' /etc/*-release 2> /dev/null)
     if [[ $DISTRO = "alpine" ]]; then
