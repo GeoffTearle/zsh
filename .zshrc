@@ -48,6 +48,7 @@ function osc7-pwd() {
 function chpwd-osc7-pwd() {
     (( ZSH_SUBSHELL )) || osc7-pwd
 }
+
 add-zsh-hook -Uz chpwd chpwd-osc7-pwd
 
 precmd() {
