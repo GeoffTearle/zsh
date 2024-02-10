@@ -55,6 +55,8 @@ precmd() {
     print -Pn "\e]133;A\e\\"
 }
 
+source ${ZDOTDIR:-~}/platform-specific.zsh
+
 # setup ssh agent
 if [ ! -S ~/.ssh/ssh_auth_sock ]; then
     eval `ssh-agent`
