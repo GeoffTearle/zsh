@@ -3,6 +3,8 @@
 #
 
 # If not running interactively, don't do anything
+export HISTFILE="$STATE_HOME"/zsh/history
+
 [[ $- != *i* ]] && return
 
 autoload -Uz +X compinit && compinit
