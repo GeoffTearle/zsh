@@ -56,6 +56,9 @@ source $zdotdir/platform/platform.zsh
 # Load term specific config
 source $zdotdir/term/term.zsh
 
+# Load local config
+source $zdotdir/local.zsh
+
 # emacs mode
 # ToDo: look into the various vim extensions
 bindkey -e
