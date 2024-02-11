@@ -2,68 +2,60 @@
 # ~/.zshrc
 #
 
-# If not running interactively, don't do anything
 export HISTFILE="$STATE_HOME"/zsh/history
 
+# If not running interactively, don't do anything
 [[ $- != *i* ]] && return
+
+zdotdir=${ZDOTDIR:-~}
 
 autoload -Uz +X compinit && compinit
 zstyle ':completion:*' cache-path "$XDG_CACHE_HOME"/zsh/zcompcache
 compinit -d "$XDG_CACHE_HOME"/zsh/zcompdump-"$ZSH_VERSION"
 
-## case insensitive path-completion
+# case insensitive path-completion
 zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
 zstyle ':completion:*' menu select
 
+# not sure anything actually uses this?
 export DO_NOT_TRACK=1
 
 ZSH_AUTOSUGGEST_USE_ASYNC="true"
 
-[[ -e ${ZDOTDIR:-~}/.antidote ]] ||
-  git clone https://github.com/mattmc3/antidote.git ${ZDOTDIR:-~}/.antidote
+[[ -e $zdotdir/.antidote ]] ||
+  git clone https://github.com/mattmc3/antidote.git $zdotdir/.antidote
 
 # Source antidote.
-source ${ZDOTDIR:-~}/.antidote/antidote.zsh
+source $zdotdir/.antidote/antidote.zsh
 antidote load
 
-export MANPAGER="sh -c 'col -bx | bat -l man -p'"
-export PAGER="bat --style='changes,rule'"
+# ToDo: move to command specific section
+if command -v bat > /dev/null; then
+  export MANPAGER="sh -c 'col -bx | bat -l man -p'"
+  export PAGER="bat --style='changes,rule'"
+fi
 
 eval "$(starship init zsh)"
 
 export PATH="$PATH:$ZDOTDIR/.antidote/bundle/wfxr/forgit/bin" # cant seem to get the antigen vars to work
 
-# exa
-alias ls="eza --icons"
-alias ll="eza --long --group --icons --header --git"
-alias la="eza --long --all --group --icons --header --git"
-
-function osc7-pwd() {
-    emulate -L zsh # also sets localoptions for us
-    setopt extendedglob
-    local LC_ALL=C
-    printf '\e]7;file://%s%s\e\' $HOST ${PWD//(#m)([^@-Za-z&-;_~])/%${(l:2::0:)$(([##16]#MATCH))}}
-}
-
-function chpwd-osc7-pwd() {
-    (( ZSH_SUBSHELL )) || osc7-pwd
-}
-
-add-zsh-hook -Uz chpwd chpwd-osc7-pwd
-
-precmd() {
-    print -Pn "\e]133;A\e\\"
-}
-
-source ${ZDOTDIR:-~}/platform-specific.zsh
-
-# setup ssh agent
-if [ ! -S ~/.ssh/ssh_auth_sock ]; then
-    eval `ssh-agent`
-    ln -sf "$SSH_AUTH_SOCK" ~/.ssh/ssh_auth_sock
+# eza
+# ToDo: move to command specific section
+if command -v eza > /dev/null; then 
+  alias ls="eza --icons"
+  alias ll="eza --long --group --icons --header --git"
+  alias la="eza --long --all --group --icons --header --git"
 fi
 
-export SSH_AUTH_SOCK=~/.ssh/ssh_auth_sock
-ssh-add -l > /dev/null || ssh-add
+# Set up ssh agent
+source $zdotdir/ssh-agent.zsh
 
+# Load platform specific config
+source $zdotdir/platform/platform.zsh
+
+# Load term specific config
+source $zdotdir/term/term.zsh
+
+# emacs mode
+# ToDo: look into the various vim extensions
 bindkey -e

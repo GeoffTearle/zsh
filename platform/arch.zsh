@@ -1,3 +1,4 @@
+# arch specific config
 # rate mirrors alias's
 alias yay-drop-caches='sudo paccache -rk3; yay -Sc --aur --noconfirm'
 
